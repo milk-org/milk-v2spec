@@ -4,7 +4,7 @@ Specifications and design board for CACAOv2.
 
 Relevant repositories:
 
-- [milk-spec](https://github.com/milk-org/milk-spec) -- this.
+- [milk-spec](https://github.com/milk-org/milk-v2spec) -- this.
 - [milk](https://github.com/milk-org/milk) -- main repo.
 - [cacao](https://github.com/cacao-org/cacao) -- as an embed (not a submodule) in milk.
 - [ImageStreamIO](https://github.com/milk-org/ImageStreamIO) -- as a submodule in milk.
