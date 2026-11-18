@@ -1,0 +1,77 @@
+build
+_build*
+_install*
+build_local/
+build_debug
+install_debug
+src/config.h
+src/milk_config.h
+local
+lib
+.cache
+
+_tmplist.txt
+.vscode
+
+Testing/
+
+# Ignore all plugins by default
+plugins/**
+
+# Un-ignore milk-extra-src
+!plugins/milk-extra-src/
+!plugins/milk-extra-src/**
+!plugins/test-src/
+!plugins/test-src/**
+
+*-code-workspace
+
+
+*.egg-info
+.eggs/
+local-install/
+
+# Documentation build output
+_site/
+site/
+sitemap.xml.gz
+docs/doxygen/
+
+# Performance benchmark results
+perfresults/
+
+# Python
+__pycache__
+*.pyc
+
+# Testing suite
+.nox
+.coverage
+**/gcov_html
+**/cov_c
+pyrightconfig.local.json
+c_cpp_properties.json
+
+# Node dependencies
+node_modules/
+
+# Shared libraries and executables
+*.so
+test_graph_panel
+
+# Generated source files
+lex.yy.c
+
+# Diagnostic dumps and execution scripts
+test_fps_stop.sh
+
+scratch/
+.antigravitycli/
+
+# Editor swap and backup files
+*.swp
+*.swo
+*~
+
+# Test executables compiled in the source tree
+src/milk-fpsclitest

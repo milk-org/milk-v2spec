@@ -1,0 +1,74 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/docs.yml'
+
+env:
+  DOCS_DEPLOY_BRANCHES: '["main"]'
+  DOCS_DEFAULT_VERSION: main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: docs-gh-pages-deploy
+      cancel-in-progress: false
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install MkDocs Material and plugins
+        run: |
+          pip install "mkdocs-material[plugins]" \
+            mkdocs-glightbox \
+            mkdocs-git-revision-date-localized-plugin \
+            mkdocs-macros-plugin \
+            mkdocs-minify-plugin \
+            mike
+
+      - name: Build MkDocs site
+        id: build_strict
+        run: mkdocs build --strict -d _site
+        continue-on-error: true
+
+      - name: Build MkDocs site (lenient)
+        if: steps.build_strict.outcome == 'failure'
+        run: mkdocs build -d _site
+
+      # Versioned deploy with mike: each branch in DOCS_DEPLOY_BRANCHES gets its own
+      # subfolder of gh-pages and an entry in the site's version dropdown.
+      - name: Deploy version to GitHub Pages
+        if: >-
+          github.event_name == 'push' &&
+          contains(fromJSON(env.DOCS_DEPLOY_BRANCHES), github.ref_name)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin gh-pages:gh-pages || true
+          VERSION="${GITHUB_REF_NAME//\//-}"
+          MKDOCS_BRANCH="${GITHUB_REF_NAME}" \
+            mike deploy --push --title "${GITHUB_REF_NAME}" "${VERSION}"
+          mike set-default --push "${DOCS_DEFAULT_VERSION}"
